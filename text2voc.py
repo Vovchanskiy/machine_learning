@@ -3,7 +3,11 @@ from PIL import Image
 import PIL
 import math
 
-raw_file = open('/Users/kalinin/downloads/cigarettes/raw_annotations/gistfile1.txt', 'r')
+
+directory = '/Users/kalinin/downloads/cigarettes'
+#в директории должна быть папка raw_annotations с исходным текстовым файлом gistfile1.txt
+#в директории должны быть две пустые папки JPEGImages и Annotations
+
 
 start_img = '{"id":'
 end_img = ']}]}'
@@ -16,6 +20,7 @@ end_points_x = ','
 start_pionts_y = 'y":'
 end_points_y = '}'
 
+raw_file = open(directory + '/raw_annotations/gistfile1.txt', 'r')
 
 for line in raw_file:
 	start_index_img = 0
@@ -39,9 +44,9 @@ for line in raw_file:
 		http_name = img_http[start_index:end_index]
 
 		#скачивание картинки
-		urllib.request.urlretrieve(img_http, '/Users/kalinin/downloads/cigarettes/JPEGImages/'+http_name+'.jpg')
+		urllib.request.urlretrieve(img_http, directory + '/JPEGImages/'+http_name+'.jpg')
 
-		im = Image.open('/Users/kalinin/downloads/cigarettes/JPEGImages/'+http_name+'.jpg')
+		im = Image.open(directory + '/JPEGImages/'+http_name+'.jpg')
 		width, height = im.size
 
 		#изменение размера изображения с сохранением пропорций
@@ -56,10 +61,10 @@ for line in raw_file:
 			wsize = int((float(width)*float(hpercent)))
 			im = im.resize((wsize,hsize), PIL.Image.ANTIALIAS)
 
-		im.save('/Users/kalinin/downloads/cigarettes/JPEGImages/'+http_name+'.jpg')
+		im.save(directory + '/JPEGImages/'+http_name+'.jpg')
 		im.close()
 
-		with open('/Users/kalinin/downloads/cigarettes/Annotations/'+http_name+'.xml', 'w') as f:
+		with open(directory + '/Annotations/'+http_name+'.xml', 'w') as f:
 			line_xml = '<annotation>' + '\n'
 			f.write(line_xml)
 			line_xml = '\t<folder>' + 'Cigarettes' + '</folder>' + '\n'
@@ -136,7 +141,7 @@ for line in raw_file:
 				x_min = int(x_min)+1
 
 			if not_object == 0:
-				with open('/Users/kalinin/downloads/cigarettes/Annotations/'+http_name+'.xml', 'a') as f:
+				with open(directory + '/Annotations/'+http_name+'.xml', 'a') as f:
 					line_xml = '\t<object>' + '\n'
 					f.write(line_xml)
 					line_xml = '\t\t<name>' + 'cigarettes' + '</name>' + '\n'
@@ -158,7 +163,7 @@ for line in raw_file:
 			else:
 				not_object_count += 1
 
-		with open('/Users/kalinin/downloads/cigarettes/Annotations/'+http_name+'.xml', 'a') as f:
+		with open(directory + '/Annotations/'+http_name+'.xml', 'a') as f:
 			line_xml = '</annotation>' + '\n'
 			f.write(line_xml)
 
